@@ -16,7 +16,7 @@ public enum DatabaseController {
     public void initialize() {
         try {
             Class.forName("org.h2.Driver").newInstance();
-            connection = DriverManager.getConnection("jdbc:h2:file:./database",
+            connection = DriverManager.getConnection("jdbc:h2:file:./database;DB_CLOSE_ON_EXIT=FALSE",
                     USER_NAME, USER_PASSWORD);
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);

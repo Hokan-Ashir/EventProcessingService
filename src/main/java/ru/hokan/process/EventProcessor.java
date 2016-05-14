@@ -38,6 +38,13 @@ public class EventProcessor extends AbstractProcessor {
         } catch (IOException e) {
             LOGGER.error(e.getMessage(), e);
             throw new RuntimeException("Cannot write message to client socket", e);
+        } finally {
+            try {
+                getClientSocket().close();
+            } catch (IOException e) {
+                LOGGER.error(e.getMessage(), e);
+                throw new RuntimeException("Cannot close client socket", e);
+            }
         }
     }
 }

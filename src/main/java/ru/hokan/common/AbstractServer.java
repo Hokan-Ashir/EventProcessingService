@@ -10,7 +10,7 @@ import java.util.concurrent.Executors;
 
 public abstract class AbstractServer implements Runnable {
     private static final Logger LOGGER = Logger.getLogger(AbstractServer.class);
-    private static final int NUMBER_OF_THREADS_IN_POOL = 10;
+    private static final int NUMBER_OF_THREADS_IN_POOL = 125;
 
     private final int port;
     private ServerSocket serverSocket;
@@ -30,6 +30,10 @@ public abstract class AbstractServer implements Runnable {
             Socket clientSocket;
             try {
                 clientSocket = serverSocket.accept();
+                clientSocket.setKeepAlive(false);
+                clientSocket.setSoLinger(true, 2);
+                clientSocket.setReuseAddress(true);
+                clientSocket.setTcpNoDelay(true);
             } catch (IOException e) {
                 LOGGER.error(e.getMessage(), e);
                 throw new RuntimeException(
@@ -44,6 +48,8 @@ public abstract class AbstractServer implements Runnable {
     private void openServerSocket() {
         try {
             serverSocket = new ServerSocket(port);
+            serverSocket.setReuseAddress(true);
+            serverSocket.setPerformancePreferences(3, 2, 1);
         } catch (IOException e) {
             LOGGER.error(e.getMessage(), e);
             throw new RuntimeException("Cannot open server port: " + port, e);
